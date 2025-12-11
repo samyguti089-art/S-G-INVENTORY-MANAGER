@@ -1,8 +1,5 @@
 usuario,clave_hash,rol
-admin,$2b$12$8q1Zy1e8p7pUu8Q2pO7lOq9l8q1Zy1e8p7pUu8Q2pO7lOq9l8q1Zy,admin
-juan,$2b$12$Qw9Lm2a7s8Dk4p1Vt6Rj3uHf5n8Bv3Xc4Zp7Lq2Wm6Eo5Yt3Rr9Lm2,usuario
-maria,$2b$12$Tg7Vb9Qw3Lp8Zk2Xc5Rj1Gd6Sa9Pq0Wm2Eo7Uu5Yt3Rr4kLp8nVb9,vendedor
-auditor1,$2b$12$Mn7bVt9Qw3Lp8Zk2Xc5Rj1Hf4Gd6Sa9Pq0Wm2Eo7Uu5Yt3Rr8s9d7,auditor
+admin,$2b$12$CSe8DExm3G4HtdV/lVlPh.uDPOYw1Fspu3xIM1jSl9DRpsvpSFeku,admin
 
 
 
