@@ -318,9 +318,6 @@ def menu(usuario, rol):
         st.session_state["usuario"] = None
         st.session_state["rol"] = None
         st.rerun()
-
-    return opcion
-
     # --------------------------------------------------------
     # ✅ INVENTARIO
     # --------------------------------------------------------
@@ -533,6 +530,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
