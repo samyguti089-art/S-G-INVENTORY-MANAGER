@@ -3,27 +3,25 @@ import pandas as pd
 import login as lgn
 from utils import logo_title, animaciones, menu
 
-# Configuración de la página (debe ir primero)
+# Configuración de la página
 st.set_page_config(
     page_title="S&G INVENTORY MANAGER",
     page_icon="🖥",
     layout="wide"
 )
 
-# ✅ Cargar animaciones primero
+# Animaciones y logo
 animaciones()
-
-# ✅ Mostrar logo y título ANTES del login
 logo_title()
 
-# ✅ Llamada al login
+# Login
 autenticado = lgn.user_password()
 
-# ✅ Si NO está autenticado, detenemos la ejecución aquí
+# Si no está autenticado, detener ejecución
 if not autenticado:
     st.stop()
 
-# ✅ Si está autenticado, mostrar menú dinámico
+# ✅ AQUÍ VA EL MENÚ (ESTE ES EL LUGAR CORRECTO)
 opcion = menu(st.session_state["usuario"], st.session_state["rol"])
 
 # ✅ Cargar páginas según la opción seleccionada
@@ -32,7 +30,19 @@ if opcion == "Inicio":
 
 elif opcion == "Inventario":
     st.header("📦 Inventario")
-    st.write("Aquí va tu módulo de inventario...")
+    # Aquí va tu módulo de inventario
+
+elif opcion == "Reportes":
+    st.header("📊 Reportes")
+    # Aquí va tu módulo de reportes
+
+elif opcion == "Compras":
+    st.header("🛒 Compras")
+    # Aquí va tu módulo de compras
+
+elif opcion == "Ventas":
+    st.header("💰 Ventas")
+    # Aquí va tu módulo de ventas
 
 elif opcion == "Administración de usuarios":
     from admin_usuarios import admin_usuarios
