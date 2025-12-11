@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import bcrypt
+from permisos import tiene_permiso
 
 # ============================================================
 # ✅ Cargar usuarios
@@ -25,6 +26,7 @@ def guardar_usuarios(df):
 # ============================================================
 def admin_usuarios():
 
+    rol = st.session_state["rol"]
     st.header("👤 Administración de usuarios")
 
     df = cargar_usuarios()
@@ -47,16 +49,21 @@ def admin_usuarios():
     nuevo_rol = st.selectbox("Rol", ["admin", "usuario", "vendedor", "auditor"])
 
     if st.button("Crear usuario"):
-        if nuevo_usuario.strip() == "" or nueva_clave.strip() == "":
-            st.error("❌ Todos los campos son obligatorios.")
-        elif nuevo_usuario in df["usuario"].values:
-            st.error("❌ El usuario ya existe.")
+        if tiene_permiso(rol, "usuarios", "crear"):
+
+            if nuevo_usuario.strip() == "" or nueva_clave.strip() == "":
+                st.error("❌ Todos los campos son obligatorios.")
+            elif nuevo_usuario in df["usuario"].values:
+                st.error("❌ El usuario ya existe.")
+            else:
+                hash_pw = bcrypt.hashpw(nueva_clave.encode("utf-8"), bcrypt.gensalt()).decode()
+                df.loc[len(df)] = [nuevo_usuario, hash_pw, nuevo_rol]
+                guardar_usuarios(df)
+                st.success(f"✅ Usuario '{nuevo_usuario}' creado correctamente.")
+                st.rerun()
+
         else:
-            hash_pw = bcrypt.hashpw(nueva_clave.encode("utf-8"), bcrypt.gensalt()).decode()
-            df.loc[len(df)] = [nuevo_usuario, hash_pw, nuevo_rol]
-            guardar_usuarios(df)
-            st.success(f"✅ Usuario '{nuevo_usuario}' creado correctamente.")
-            st.rerun()
+            st.info("No tienes permiso para crear usuarios.")
 
     st.markdown("---")
 
@@ -73,21 +80,26 @@ def admin_usuarios():
     nueva_clave_edit = st.text_input("Nueva contraseña (opcional)", type="password")
 
     if st.button("Actualizar usuario"):
-        idx_list = df.index[df["usuario"] == usuario_sel].tolist()
+        if tiene_permiso(rol, "usuarios", "editar"):
 
-        if not idx_list:
-            st.error("❌ El usuario seleccionado ya no existe.")
+            idx_list = df.index[df["usuario"] == usuario_sel].tolist()
+
+            if not idx_list:
+                st.error("❌ El usuario seleccionado ya no existe.")
+            else:
+                idx = idx_list[0]
+                df.at[idx, "rol"] = nuevo_rol_edit
+
+                if nueva_clave_edit.strip() != "":
+                    hash_pw = bcrypt.hashpw(nueva_clave_edit.encode("utf-8"), bcrypt.gensalt()).decode()
+                    df.at[idx, "clave_hash"] = hash_pw
+
+                guardar_usuarios(df)
+                st.success(f"✅ Usuario '{usuario_sel}' actualizado correctamente.")
+                st.rerun()
+
         else:
-            idx = idx_list[0]
-            df.at[idx, "rol"] = nuevo_rol_edit
-
-            if nueva_clave_edit.strip() != "":
-                hash_pw = bcrypt.hashpw(nueva_clave_edit.encode("utf-8"), bcrypt.gensalt()).decode()
-                df.at[idx, "clave_hash"] = hash_pw
-
-            guardar_usuarios(df)
-            st.success(f"✅ Usuario '{usuario_sel}' actualizado correctamente.")
-            st.rerun()
+            st.info("No tienes permiso para editar usuarios.")
 
     st.markdown("---")
 
@@ -102,13 +114,19 @@ def admin_usuarios():
     usuario_del = st.selectbox("Usuario a eliminar", usuarios_lista_del)
 
     if st.button("Eliminar usuario"):
+
+        if not tiene_permiso(rol, "usuarios", "eliminar"):
+            st.info("No tienes permiso para eliminar usuarios.")
+            return
+
         if usuario_del == "admin":
             st.error("❌ No puedes eliminar al usuario administrador principal.")
+            return
+
+        if usuario_del not in df["usuario"].values:
+            st.error("❌ El usuario seleccionado ya no existe.")
         else:
-            if usuario_del not in df["usuario"].values:
-                st.error("❌ El usuario seleccionado ya no existe.")
-            else:
-                df = df[df["usuario"] != usuario_del]
-                guardar_usuarios(df)
-                st.success(f"✅ Usuario '{usuario_del}' eliminado correctamente.")
-                st.rerun()
+            df = df[df["usuario"] != usuario_del]
+            guardar_usuarios(df)
+            st.success(f"✅ Usuario '{usuario_del}' eliminado correctamente.")
+            st.rerun()
