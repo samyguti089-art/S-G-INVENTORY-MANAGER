@@ -28,7 +28,7 @@ def animaciones():
         100% { background-position: 0% 50%; }
     }
 
-    /* ✅ Fade-in */
+    /* ✅ Fade-in general */
     .fade-in {
         opacity: 0;
         animation: fadeIn 1.2s ease-in forwards;
@@ -50,7 +50,7 @@ def animaciones():
     }
 
     /* ✅ Inputs */
-    input:focus {
+    input:focus, textarea:focus {
         border-color: #00bcd4 !important;
         box-shadow: 0 0 5px rgba(0, 188, 212, 0.5) !important;
         transition: all 0.3s ease;
@@ -100,7 +100,8 @@ def logo_title():
 
 
 # ============================================================
-# ✅ VALIDACIÓN DE USUARIO
+# ✅ VALIDACIÓN DE USUARIO BÁSICA (CSV)
+#    (versión simple, sin hash aún)
 # ============================================================
 def validar_usuario(usuario, clave):
     dfusuarios = pd.read_csv("usuarios.csv", encoding="utf-8")
@@ -111,29 +112,85 @@ def validar_usuario(usuario, clave):
     usuario = usuario.strip().lower()
     clave = clave.strip().lower()
 
-    return len(dfusuarios[(dfusuarios['usuario'] == usuario) &
-                          (dfusuarios['clave'] == clave)]) > 0
+    fila = dfusuarios[
+        (dfusuarios["usuario"] == usuario) &
+        (dfusuarios["clave"] == clave)
+    ]
+
+    if fila.empty:
+        return False, None
+
+    # Si más adelante agregas columna "rol", la usamos
+    rol = fila.iloc[0]["rol"] if "rol" in fila.columns else "usuario"
+    return True, rol
 
 
 # ============================================================
-# ✅ CARGA Y GUARDADO DE INVENTARIO
+# ✅ RUTAS E INVENTARIO POR USUARIO
 # ============================================================
-def cargar_inventario(archivo="inventario.json"):
+def ruta_inventario(usuario):
+    os.makedirs("inventarios", exist_ok=True)
+    return os.path.join("inventarios", f"{usuario}.json")
+
+
+def cargar_inventario_usuario(usuario):
+    archivo = ruta_inventario(usuario)
     if os.path.exists(archivo):
         with open(archivo, "r", encoding="utf-8") as f:
             return json.load(f)
     return []
 
 
-def guardar_inventario(inventario, archivo="inventario.json"):
+def guardar_inventario_usuario(usuario, inventario):
+    archivo = ruta_inventario(usuario)
     with open(archivo, "w", encoding="utf-8") as f:
         json.dump(inventario, f, indent=4, ensure_ascii=False)
+
+
+# ============================================================
+# ✅ PERMISOS POR ROL (base para escalar)
+# ============================================================
+PERMISOS = {
+    "admin": ["Inventario", "Ventas", "Compras", "Reportes"],
+    "usuario": ["Inventario", "Reportes"],  # rol por defecto
+    "vendedor": ["Inventario", "Ventas"],
+    "auditor": ["Reportes"],
+}
+
+
+def seleccionar_usuario_para_admin(rol, usuario_actual):
+    """
+    Si es admin, puede elegir a qué usuario ver.
+    Si no, siempre ve su propio inventario.
+    """
+    if rol != "admin":
+        return usuario_actual
+
+    if not os.path.exists("usuarios.csv"):
+        return usuario_actual
+
+    df = pd.read_csv("usuarios.csv", encoding="utf-8")
+    if "usuario" not in df.columns:
+        return usuario_actual
+
+    usuarios = df["usuario"].dropna().unique().tolist()
+
+    st.sidebar.markdown("---")
+    usuario_objetivo = st.sidebar.selectbox(
+        "👁️ Usuario a administrar:",
+        usuarios,
+        index=usuarios.index(usuario_actual) if usuario_actual in usuarios else 0
+    )
+    return usuario_objetivo
 
 
 # ============================================================
 # ✅ TARJETAS KPI ESTILO POWER BI
 # ============================================================
 def kpi_cards(df):
+    if df.empty:
+        st.info("No hay datos para mostrar KPIs.")
+        return
 
     total_productos = len(df)
     valor_total = df["valor_total"].sum()
@@ -153,16 +210,26 @@ def kpi_cards(df):
 # ============================================================
 def dashboard_graficos(inventario):
 
+    if not inventario:
+        st.info("No hay datos en el inventario para mostrar gráficos.")
+        return
+
     st.subheader("📊 Dashboard Avanzado S&G (Estilo Power BI)")
 
     df = pd.DataFrame(inventario)
+
+    # Asegurar columnas mínimas
+    for col in ["nombre", "marca", "cantidad", "precio_unitario", "valor_total"]:
+        if col not in df.columns:
+            st.error(f"Falta la columna '{col}' en el inventario.")
+            return
 
     # ✅ Tarjetas KPI
     kpi_cards(df)
 
     st.markdown("---")
 
-    # ✅ Gráfico 1 — Barras horizontales
+    # ✅ Gráfico 1 — Barras horizontales (Top productos por valor)
     st.markdown("### 💰 Top productos por valor total")
     fig1 = px.bar(
         df.sort_values("valor_total", ascending=True),
@@ -202,8 +269,9 @@ def dashboard_graficos(inventario):
 
     # ✅ Gráfico 4 — Barras agrupadas por marca
     st.markdown("### 📊 Cantidad total por marca")
+    df_marca = df.groupby("marca", as_index=False)["cantidad"].sum()
     fig4 = px.bar(
-        df.groupby("marca")["cantidad"].sum().reset_index(),
+        df_marca,
         x="marca",
         y="cantidad",
         color="cantidad",
@@ -214,29 +282,34 @@ def dashboard_graficos(inventario):
 
 
 # ============================================================
-# ✅ MENÚ PRINCIPAL
+# ✅ MENÚ PRINCIPAL (CON INVENTARIO POR USUARIO)
 # ============================================================
-def menu(usuario):
+def menu(usuario, rol):
+
+    # Determinar qué opciones ve según su rol
+    opciones_permitidas = PERMISOS.get(rol, PERMISOS["usuario"])
 
     with st.sidebar:
-        st.header("📦 Menú Principal")
-        opcion = st.selectbox("Selecciona una opción:", ["Inventario", "Ventas", "Compras", "Reportes"])
-        st.write(f"Has elegido: {opcion}")
+        st.header(f"📦 Menú ({rol.upper()})")
+        opcion = st.selectbox("Selecciona una opción:", opciones_permitidas)
+        # Si es admin, puede elegir qué usuario ver
+        usuario_objetivo = seleccionar_usuario_para_admin(rol, usuario)
+
+    # Cargar inventario del usuario objetivo
+    inventario = cargar_inventario_usuario(usuario_objetivo)
 
     # --------------------------------------------------------
     # ✅ INVENTARIO
     # --------------------------------------------------------
     if opcion == "Inventario":
 
-        st.header("🖥 Inventario")
+        st.header(f"🖥 Inventario de {usuario_objetivo}")
         tab1, tab2, tab3, tab4 = st.tabs([
             "➕ Agregar producto",
             "🗑 Eliminar producto",
             "✏️ Actualizar producto",
             "📋 Consultar inventario"
         ])
-
-        inventario = cargar_inventario()
 
         # TAB 1 — Agregar
         with tab1:
@@ -254,8 +327,8 @@ def menu(usuario):
                     "valor_total": cantidad * precio
                 }
                 inventario.append(producto)
-                guardar_inventario(inventario)
-                st.success(f"✅ Producto '{nombre}' agregado al inventario")
+                guardar_inventario_usuario(usuario_objetivo, inventario)
+                st.success(f"✅ Producto '{nombre}' agregado al inventario de {usuario_objetivo}")
 
         # TAB 2 — Eliminar
         with tab2:
@@ -264,8 +337,8 @@ def menu(usuario):
                 producto_sel = st.selectbox("Seleccione producto a eliminar", nombres)
                 if st.button("Eliminar", key="eliminar"):
                     inventario = [p for p in inventario if p["nombre"] != producto_sel]
-                    guardar_inventario(inventario)
-                    st.success(f"Producto '{producto_sel}' eliminado.")
+                    guardar_inventario_usuario(usuario_objetivo, inventario)
+                    st.success(f"Producto '{producto_sel}' eliminado del inventario de {usuario_objetivo}.")
             else:
                 st.info("Inventario vacío.")
 
@@ -282,10 +355,10 @@ def menu(usuario):
 
                     if st.button("Actualizar", key="actualizar"):
                         producto["cantidad"] = nueva_cantidad
-                        producto["precio_unitario"] = nuevo_precio
+                        producto["precio_unitario"] = nuevo_preccio = nuevo_precio
                         producto["valor_total"] = nueva_cantidad * nuevo_precio
-                        guardar_inventario(inventario)
-                        st.success(f"Producto '{producto_sel}' actualizado.")
+                        guardar_inventario_usuario(usuario_objetivo, inventario)
+                        st.success(f"Producto '{producto_sel}' actualizado en el inventario de {usuario_objetivo}.")
             else:
                 st.info("Inventario vacío.")
 
@@ -301,37 +374,35 @@ def menu(usuario):
     # --------------------------------------------------------
     if opcion == "Reportes":
 
-        st.header("📊 Reportes")
+        st.header(f"📊 Reportes de {usuario_objetivo}")
         tab_1, tab_2, tab_3 = st.tabs([
             "📥 Exportar a Excel",
             "📄 Exportar a PDF",
             "📈 Gráficas"
         ])
 
-        inventario = cargar_inventario()
-
         # ✅ Exportar Excel
         with tab_1:
             if st.button("Exportar a Excel"):
-                df = pd.DataFrame(inventario)
-                buffer = io.BytesIO()
-                df.to_excel(buffer, index=False, engine="openpyxl")
-                buffer.seek(0)
+                if inventario:
+                    df = pd.DataFrame(inventario)
+                    buffer = io.BytesIO()
+                    df.to_excel(buffer, index=False, engine="openpyxl")
+                    buffer.seek(0)
 
-                st.download_button(
-                    label="📥 Descargar Excel",
-                    data=buffer,
-                    file_name="inventario.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
-                st.success("✅ Inventario exportado a Excel")
+                    st.download_button(
+                        label="📥 Descargar Excel",
+                        data=buffer,
+                        file_name=f"inventario_{usuario_objetivo}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                    st.success("✅ Inventario exportado a Excel")
+                else:
+                    st.info("No hay datos para exportar.")
 
         # ✅ Dashboard avanzado
         with tab_3:
-            if inventario:
-                dashboard_graficos(inventario)
-            else:
-                st.info("No hay datos en el inventario para mostrar gráficos.")
+            dashboard_graficos(inventario)
 
     # --------------------------------------------------------
     # ✅ BOTÓN SALIR
