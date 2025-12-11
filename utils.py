@@ -55,10 +55,18 @@ input:focus {
     transition: all 0.3s ease;
 }
 
-/* ✅ Botón con hover */
-button:hover {
-    transform: scale(1.05);
+/* ✅ Botón de Streamlit */
+.stButton > button {
     transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+/* ✅ Hover visible y elegante */
+.stButton > button:hover {
+    transform: scale(1.05);
+    background-color: #00bcd4 !important;
+    color: white !important;
+    border-color: #00bcd4 !important;
 }
 
 </style>
@@ -204,6 +212,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
