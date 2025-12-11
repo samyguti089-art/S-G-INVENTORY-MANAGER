@@ -54,11 +54,14 @@ def user_password():
     if st.session_state.get("autenticado", False):
         menu(st.session_state["usuario"], st.session_state["rol"])
         return True
+    col1, col2, col3 = st.columns([2, 5, 2])  # Ajusta proporciones si quieres moverlo más
 
-    st.subheader("🔐 Inicio de sesión")
+    with col1:     
 
-    usuario = st.text_input("Usuario")
-    clave = st.text_input("Contraseña", type="password")
+        st.subheader("🔐 Inicio de sesión")
+    
+        usuario = st.text_input("Usuario")
+        clave = st.text_input("Contraseña", type="password")
 
     if st.button("Ingresar"):
 
@@ -83,5 +86,6 @@ def user_password():
 
 
         
+
 
 
