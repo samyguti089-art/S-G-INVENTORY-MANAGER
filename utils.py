@@ -8,7 +8,7 @@ def logo_title ():
 # Crear columnas: una angosta para el logo y otra para el título
    col1, col2 = st.columns([1, 5])
    with col1:
-    st.image("tests/logo.png", width=200)  # ajusta el tamaño
+    st.image("logo.png", width=200)  # ajusta el tamaño
    with col2:
     st.title("S&G Inventory Manager")
 
@@ -144,6 +144,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
