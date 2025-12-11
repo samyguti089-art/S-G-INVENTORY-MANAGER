@@ -1,5 +1,5 @@
-usuario,nombre,clave
-admin,"admin",admin
-usrventas,"analista ventas",clave123	
-usrcompras,"analista compras",clave234
-1048068981,"samuel gutierrez",051696
+usuario,clave_hash,rol
+admin,$2b$12$Qe7q7pX2Zq0d8uXG8p7pUu8Q2pQx7l3u7x9y4z8t6v5w3r1s0t9eK,admin
+juan,$2b$12$8s9d7f6g5h4j3k2l1p0o9i8u7y6t5r4e3w2q1z9x8c7v6b5n4m3,usuario
+maria,$2b$12$Zx9c8v7b6n5m4a3s2d1f0g9h8j7k6l5p4o3i2u1y0t9r8e7w6q,vendedor
+auditor1,$2b$12$Mn7bVt9Qw3Lp8Zk2Xc5Rj1Hf4Gd6Sa9Pq0Wm2Eo7Uu5Yt3Rr,auditor
