@@ -9,7 +9,7 @@ def animaciones ():
 st.markdown("""
 <style>
 
-/* ✅ Fondo animado aplicado correctamente a Streamlit */
+/* ✅ Fondo animado sci‑fi */
 html, body, .stApp {
     background: linear-gradient(-45deg, #0a0f1f, #0d1b2a, #1b263b, #415a77);
     background-size: 400% 400%;
@@ -204,6 +204,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
