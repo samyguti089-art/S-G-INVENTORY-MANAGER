@@ -177,8 +177,13 @@ elif opcion == "Ventas":
 # ✅ ADMINISTRACIÓN DE USUARIOS
 # --------------------------------------------------------
 elif opcion == "Administración de usuarios":
-    from admin_user import admin_usuarios
-    admin_usuarios()
+    rol = st.session_state["rol"]
+    if not tiene_permiso(rol, "usuarios", "ver"):
+        st.error("No tienes permisos para acceder a esta sección.")
+    else:
+        from admin_user import admin_usuarios
+        admin_usuarios()
+
 
 
 
