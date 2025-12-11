@@ -4,6 +4,45 @@ import json
 import os
 import io
 
+
+def animaciones ():
+    st.markdown("""
+<style>
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1.2s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.pulse {
+    animation: pulse 1.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+input:focus {
+    border-color: #00bcd4 !important;
+    box-shadow: 0 0 5px rgba(0, 188, 212, 0.5) !important;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
 def logo_title ():
 # Crear columnas: una angosta para el logo y otra para el título
    col1, col2 = st.columns([1, 5])
@@ -144,6 +183,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
