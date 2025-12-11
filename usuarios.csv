@@ -1,8 +1,10 @@
 usuario,clave_hash,rol
-admin,$2b$12$uQxQvZqFQ0u8p7pUu8Q2pO7l3u7x9y4z8t6v5w3r1s0t9eK,admin
-juan,$2b$12$0uHq0z8pG6x1eZ0uQ1y4uO7l3u7x9y4z8t6v5w3r1s0t9eK,usuario
-maria,$2b$12$7pXq9vTgF3m2eR1uW8y4uO7l3u7x9y4z8t6v5w3r1s0t9eK,vendedor
-auditor1,$2b$12$4kLp8nQwT2s9eV0uC5y4uO7l3u7x9y4z8t6v5w3r1s0t9eK,auditor
+admin,$2b$12$8q1Zy1e8p7pUu8Q2pO7l3u7x9y4z8t6v5w3r1s0t9eKq1Zy1e8p7pUu,admin
+juan,$2b$12$Qw9Lm2a7s8Dk4p1Vt6Rj3u9y2Hf5n8Bv3Xc4Zp7Lq2Wm6Eo5Yt3Rr,usuario
+maria,$2b$12$Tg7Vb9Qw3Lp8Zk2Xc5Rj1Hf4Gd6Sa9Pq0Wm2Eo7Uu5Yt3Rr4kLp8n,vendedor
+auditor1,$2b$12$Mn7bVt9Qw3Lp8Zk2Xc5Rj1Hf4Gd6Sa9Pq0Wm2Eo7Uu5Yt3Rr8s9d7f,auditor
+
+
 
 
 
