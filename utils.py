@@ -284,14 +284,31 @@ def dashboard_graficos(inventario):
 # ============================================================
 def menu(usuario, rol):
 
-    # Determinar qué opciones ve según su rol
-    opciones_permitidas = PERMISOS.get(rol, PERMISOS["usuario"])
+    st.sidebar.title("📌 Menú principal")
 
-    with st.sidebar:
-        st.header(f"📦 Menú ({rol.upper()})")
-        opcion = st.selectbox("Selecciona una opción:", opciones_permitidas)
-        # Si es admin, puede elegir qué usuario ver
-        usuario_objetivo = seleccionar_usuario_para_admin(rol, usuario)
+    # Mostrar información del usuario
+    st.sidebar.markdown(f"👤 **Usuario:** {usuario}")
+    st.sidebar.markdown(f"🔑 **Rol:** {rol.upper()}")
+
+    # Opciones base para todos los usuarios
+    opciones = ["Inicio", "Inventario"]
+
+    # Solo el administrador puede ver la administración de usuarios
+    if rol == "admin":
+        opciones.append("Administración de usuarios")
+
+    # Menú lateral
+    opcion = st.sidebar.selectbox("Selecciona una opción", opciones)
+
+    # Botón de cierre de sesión
+    if st.sidebar.button("Cerrar sesión"):
+        st.session_state["autenticado"] = False
+        st.session_state["usuario"] = None
+        st.session_state["rol"] = None
+        st.rerun()
+
+    return opcion
+
 
     # Cargar inventario del usuario objetivo
     inventario = cargar_inventario_usuario(usuario_objetivo)
@@ -508,6 +525,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
