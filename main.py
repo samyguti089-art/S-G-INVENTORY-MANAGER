@@ -263,7 +263,8 @@ elif opcion == "Ventas":
 # --------------------------------------------------------
 elif opcion == "Administración de usuarios":
     from admin_user import admin_usuarios
-    admin_user()
+    admin_usuarios()
+
 
 
 
