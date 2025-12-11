@@ -405,29 +405,29 @@ def menu(usuario, rol):
 
     if opcion == "Administración de usuarios" and rol == "admin":
 
-    st.header("👤 Administración de usuarios")
-
-    # ============================
-    # ✅ Cargar usuarios
-    # ============================
-    df = pd.read_csv("usuarios.csv")
-
-    st.subheader("📋 Lista de usuarios")
-    st.dataframe(df)
-
-    st.markdown("---")
-    st.subheader("➕ Crear nuevo usuario")
-
-    # ============================
-    # ✅ Inputs de creación
-    # ============================
-    nuevo_usuario = st.text_input("Usuario nuevo", key="crear_usuario_input")
-    nueva_clave = st.text_input("Contraseña nueva", type="password", key="crear_clave_input")
-    nuevo_rol = st.selectbox("Rol", ["admin", "usuario", "vendedor", "auditor"], key="crear_rol_input")
-
-    # ============================
-    # ✅ Botón de creación
-    # ============================
+        st.header("👤 Administración de usuarios")
+    
+        # ============================
+        # ✅ Cargar usuarios
+        # ============================
+        df = pd.read_csv("usuarios.csv")
+    
+        st.subheader("📋 Lista de usuarios")
+        st.dataframe(df)
+    
+        st.markdown("---")
+        st.subheader("➕ Crear nuevo usuario")
+    
+        # ============================
+        # ✅ Inputs de creación
+        # ============================
+        nuevo_usuario = st.text_input("Usuario nuevo", key="crear_usuario_input")
+        nueva_clave = st.text_input("Contraseña nueva", type="password", key="crear_clave_input")
+        nuevo_rol = st.selectbox("Rol", ["admin", "usuario", "vendedor", "auditor"], key="crear_rol_input")
+    
+        # ============================
+        # ✅ Botón de creación
+        # ============================
     if st.button("Crear usuario", key="btn_crear_usuario"):
         if nuevo_usuario.strip() == "" or nueva_clave.strip() == "":
             st.error("❌ Todos los campos son obligatorios.")
@@ -442,18 +442,18 @@ def menu(usuario, rol):
 
             st.success(f"✅ Usuario '{nuevo_usuario}' creado correctamente.")
 
-    st.markdown("---")
-    st.subheader("✏️ Editar usuario existente")
-
-    # ============================
-    # ✅ Recargar DF para edición
-    # ============================
-    df = pd.read_csv("usuarios.csv")
-    usuarios_lista = df["usuario"].tolist()
-
-    usuario_sel = st.selectbox("Seleccionar usuario", usuarios_lista, key="editar_usuario_select")
-    nuevo_rol_edit = st.selectbox("Nuevo rol", ["admin", "usuario", "vendedor", "auditor"], key="editar_rol_select")
-    nueva_clave_edit = st.text_input("Nueva contraseña (opcional)", type="password", key="editar_clave_input")
+            st.markdown("---")
+            st.subheader("✏️ Editar usuario existente")
+        
+            # ============================
+            # ✅ Recargar DF para edición
+            # ============================
+            df = pd.read_csv("usuarios.csv")
+            usuarios_lista = df["usuario"].tolist()
+        
+            usuario_sel = st.selectbox("Seleccionar usuario", usuarios_lista, key="editar_usuario_select")
+            nuevo_rol_edit = st.selectbox("Nuevo rol", ["admin", "usuario", "vendedor", "auditor"], key="editar_rol_select")
+            nueva_clave_edit = st.text_input("Nueva contraseña (opcional)", type="password", key="editar_clave_input")
 
     # ============================
     # ✅ Botón de actualización
@@ -473,19 +473,19 @@ def menu(usuario, rol):
                 hash_pw = bcrypt.hashpw(nueva_clave_edit.encode("utf-8"), bcrypt.gensalt()).decode()
                 df.at[idx, "clave_hash"] = hash_pw
 
-            df.to_csv("usuarios.csv", index=False)
-            st.success(f"✅ Usuario '{usuario_sel}' actualizado correctamente.")
-
-    st.markdown("---")
-    st.subheader("🗑 Eliminar usuario")
-
-    # ============================
-    # ✅ Recargar DF para eliminación
-    # ============================
-    df = pd.read_csv("usuarios.csv")
-    usuarios_lista_del = df["usuario"].tolist()
-
-    usuario_del = st.selectbox("Usuario a eliminar", usuarios_lista_del, key="eliminar_usuario_select")
+                df.to_csv("usuarios.csv", index=False)
+                st.success(f"✅ Usuario '{usuario_sel}' actualizado correctamente.")
+    
+                st.markdown("---")
+                st.subheader("🗑 Eliminar usuario")
+            
+                # ============================
+                # ✅ Recargar DF para eliminación
+                # ============================
+                df = pd.read_csv("usuarios.csv")
+                usuarios_lista_del = df["usuario"].tolist()
+            
+                usuario_del = st.selectbox("Usuario a eliminar", usuarios_lista_del, key="eliminar_usuario_select")
 
     # ============================
     # ✅ Botón de eliminación
@@ -508,6 +508,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
