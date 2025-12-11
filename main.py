@@ -262,8 +262,9 @@ elif opcion == "Ventas":
 # ✅ ADMINISTRACIÓN DE USUARIOS
 # --------------------------------------------------------
 elif opcion == "Administración de usuarios":
-    from admin_usuarios import admin_usuarios
+    from admin_user import admin_usuarios
     admin_user()
+
 
 
 
