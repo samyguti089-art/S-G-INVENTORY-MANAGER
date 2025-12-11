@@ -138,48 +138,64 @@ def guardar_inventario(inventario, archivo="inventario.json"):
 # ============================================================
 def dashboard_graficos(inventario):
 
-    st.subheader("📊 Dashboard Corporativo S&G")
+    st.subheader("📊 Dashboard Avanzado S&G (Estilo Power BI)")
 
     df = pd.DataFrame(inventario)
 
-    # ✅ Gráfico 1
-    st.markdown("### 📦 Cantidad por producto")
+    # ✅ Tarjetas KPI
+    kpi_cards(df)
+
+    st.markdown("---")
+
+    # ✅ Gráfico 1 — Barras horizontales (Top productos por valor)
+    st.markdown("### 💰 Top productos por valor total")
     fig1 = px.bar(
-        df,
-        x="nombre",
-        y="cantidad",
-        color="cantidad",
-        color_continuous_scale="Blues",
-        title="Cantidad disponible por producto"
+        df.sort_values("valor_total", ascending=True),
+        x="valor_total",
+        y="nombre",
+        orientation="h",
+        color="valor_total",
+        color_continuous_scale="Teal",
+        title="Productos con mayor valor en inventario"
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # ✅ Gráfico 2
-    st.markdown("### 💰 Valor total por producto")
-    fig2 = px.bar(
-        df,
-        x="nombre",
-        y="valor_total",
-        color="valor_total",
-        color_continuous_scale="Teal",
-        title="Valor total del inventario por producto"
-    )
-    st.plotly_chart(fig2, use_container_width=True)
-
-    # ✅ Gráfico 3
+    # ✅ Gráfico 2 — Distribución por marca
     st.markdown("### 🏷️ Distribución por marca")
-    fig3 = px.pie(
+    fig2 = px.pie(
         df,
         names="marca",
         values="cantidad",
+        hole=0.4,
+        color_discrete_sequence=px.colors.sequential.Blues,
         title="Participación por marca"
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+
+    # ✅ Gráfico 3 — Cantidad vs Precio (scatter)
+    st.markdown("### 📈 Relación entre cantidad y precio unitario")
+    fig3 = px.scatter(
+        df,
+        x="precio_unitario",
+        y="cantidad",
+        size="valor_total",
+        color="marca",
+        title="Relación entre precio y cantidad por producto",
+        hover_name="nombre"
     )
     st.plotly_chart(fig3, use_container_width=True)
 
-
-# ============================================================
-# ✅ MENÚ PRINCIPAL
-# ============================================================
+    # ✅ Gráfico 4 — Barras agrupadas por marca
+    st.markdown("### 📊 Cantidad total por marca")
+    fig4 = px.bar(
+        df.groupby("marca")["cantidad"].sum().reset_index(),
+        x="marca",
+        y="cantidad",
+        color="cantidad",
+        color_continuous_scale="Blues",
+        title="Cantidad total por marca"
+    )
+    st.plotly_chart(fig4, use_container_width=True)
 def menu(usuario):
 
     with st.sidebar:
@@ -303,6 +319,7 @@ def menu(usuario):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
