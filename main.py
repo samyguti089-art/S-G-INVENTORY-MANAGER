@@ -33,12 +33,11 @@ if opcion == "Inicio":
 # ✅ INVENTARIO
 # --------------------------------------------------------
 elif opcion == "Inventario":
-    
 
     usuario_actual = st.session_state["usuario"]
     rol = st.session_state["rol"]
-    st.header(f"🖥 Inventario de {usuario_actual}")
 
+    st.header(f"🖥 Inventario de {usuario_actual}")
 
     # ============================
     # ✅ Cargar inventario del usuario
@@ -57,6 +56,7 @@ elif opcion == "Inventario":
         df = pd.DataFrame(inventario)
         df.to_csv(f"inventario_{usuario}.csv", index=False)
 
+    # ✅ AQUÍ SE CREA LA VARIABLE inventario
     inventario = cargar_inventario(usuario_actual)
 
     # ============================
@@ -80,7 +80,7 @@ elif opcion == "Inventario":
             marca = st.text_input("Marca del producto")
             cantidad = st.number_input("Cantidad", min_value=1, step=1)
             precio = st.number_input("Precio unitario", min_value=0.0, step=0.1)
-    
+
             if st.button("Guardar", key="guardar_producto"):
                 producto = {
                     "nombre": nombre.title().strip(),
@@ -88,10 +88,10 @@ elif opcion == "Inventario":
                     "cantidad": cantidad,
                     "precio_unitario": precio,
                     "valor_total": cantidad * precio
-            }
-            inventario.append(producto)
-            guardar_inventario(usuario_actual, inventario)
-            st.success(f"✅ Producto '{nombre}' agregado.")
+                }
+                inventario.append(producto)
+                guardar_inventario(usuario_actual, inventario)
+                st.success(f"✅ Producto '{nombre}' agregado.")
 
     # --------------------------------------------------------
     # ✅ TAB 2 — Eliminar producto
@@ -100,11 +100,10 @@ elif opcion == "Inventario":
         if not tiene_permiso(rol, "inventario", "eliminar"):
             st.warning("No tienes permiso para eliminar productos.")
         else:
-
             if inventario:
                 nombres = [p["nombre"] for p in inventario]
                 producto_sel = st.selectbox("Seleccione producto a eliminar", nombres)
-    
+
                 if st.button("Eliminar", key="eliminar_producto"):
                     inventario = [p for p in inventario if p["nombre"] != producto_sel]
                     guardar_inventario(usuario_actual, inventario)
@@ -119,17 +118,16 @@ elif opcion == "Inventario":
         if not tiene_permiso(rol, "inventario", "editar"):
             st.warning("No tienes permiso para editar productos.")
         else:
-
             if inventario:
                 nombres = [p["nombre"] for p in inventario]
                 producto_sel = st.selectbox("Seleccione producto a actualizar", nombres)
-    
+
                 producto = next((p for p in inventario if p["nombre"] == producto_sel), None)
-    
+
                 if producto:
                     nueva_cantidad = st.number_input("Nueva cantidad", value=producto["cantidad"], min_value=1)
                     nuevo_precio = st.number_input("Nuevo precio", value=producto["precio_unitario"], min_value=0.0)
-    
+
                     if st.button("Actualizar", key="actualizar_producto"):
                         producto["cantidad"] = nueva_cantidad
                         producto["precio_unitario"] = nuevo_precio
@@ -146,14 +144,10 @@ elif opcion == "Inventario":
         if not tiene_permiso(rol, "inventario", "ver"):
             st.warning("No tienes permiso para ver el inventario.")
         else:
-
             if inventario:
                 st.table(inventario)
             else:
                 st.info("Inventario vacío.")
-    # aquí copiaremos la lógica de tabs que tenías,
-    # pero ya fuera de utils y sin usar usuario_objetivo “mágico”
-
 # --------------------------------------------------------
 # ✅ REPORTES
 # --------------------------------------------------------
@@ -183,6 +177,7 @@ elif opcion == "Administración de usuarios":
     else:
         from admin_user import admin_usuarios
         admin_usuarios()
+
 
 
 
