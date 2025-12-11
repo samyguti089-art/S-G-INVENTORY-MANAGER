@@ -6,7 +6,7 @@ import io
 
 
 def animaciones ():
-st.markdown("""
+    st.markdown("""
 <style>
 
 /* ✅ Fondo animado sci‑fi */
@@ -204,6 +204,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
