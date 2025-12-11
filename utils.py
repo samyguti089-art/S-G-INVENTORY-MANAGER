@@ -6,14 +6,14 @@ import io
 
 
 def animaciones ():
- st.markdown("""
- <style>
+st.markdown("""
+<style>
 
-/* ✅ Fondo animado sci‑fi */
-body {
+/* ✅ Fondo animado aplicado correctamente a Streamlit */
+html, body, .stApp {
     background: linear-gradient(-45deg, #0a0f1f, #0d1b2a, #1b263b, #415a77);
     background-size: 400% 400%;
-    animation: gradientBG 12s ease infinite;
+    animation: gradientBG 12s ease infinite !important;
 }
 
 @keyframes gradientBG {
@@ -204,6 +204,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
