@@ -54,7 +54,7 @@ def user_password():
     if st.session_state.get("autenticado", False):
         menu(st.session_state["usuario"], st.session_state["rol"])
         return True
-    col1, col2, col3 = st.columns([5, 1, 2])  # Ajusta proporciones si quieres moverlo más
+    col1, col2, col3 = st.columns([2, 5, 2])  # Ajusta proporciones si quieres moverlo más
 
     with col1:     
 
@@ -86,6 +86,7 @@ def user_password():
 
 
         
+
 
 
 
