@@ -1,6 +1,8 @@
 usuario,clave_hash,rol
 admin,$2b$12$uQxQvZqFQ0u8p7pUu8Q2pO7l3u7x9y4z8t6v5w3r1s0t9eK,admin
-juan,$2b$12$8s9d7f6g5h4j3k2l1p0o9i8u7y6t5r4e3w2q1z9x8c7v6b5n4m3,usuario
-maria,$2b$12$Zx9c8v7b6n5m4a3s2d1f0g9h8j7k6l5p4o3i2u1y0t9r8e7w6q,vendedor
-auditor1,$2b$12$Mn7bVt9Qw3Lp8Zk2Xc5Rj1Hf4Gd6Sa9Pq0Wm2Eo7Uu5Yt3Rr,auditor
+juan,$2b$12$0uHq0z8pG6x1eZ0uQ1y4uO7l3u7x9y4z8t6v5w3r1s0t9eK,usuario
+maria,$2b$12$7pXq9vTgF3m2eR1uW8y4uO7l3u7x9y4z8t6v5w3r1s0t9eK,vendedor
+auditor1,$2b$12$4kLp8nQwT2s9eV0uC5y4uO7l3u7x9y4z8t6v5w3r1s0t9eK,auditor
+
+
 
