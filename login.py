@@ -46,7 +46,16 @@ def validar_usuario_hash(usuario, clave):
 
 
 # ============================================================
-# ✅ Pantalla de Login (RESPETA TU ESTRUCTURA ORIGINAL)
+# ✅ Protección de acceso para cualquier página
+# ============================================================
+def proteger_pagina():
+    if not st.session_state.get("autenticado", False):
+        st.error("⚠️ Debes iniciar sesión para acceder a esta sección.")
+        st.stop()
+
+
+# ============================================================
+# ✅ Pantalla de Login
 # ============================================================
 def user_password():
 
@@ -54,12 +63,12 @@ def user_password():
     if st.session_state.get("autenticado", False):
         menu(st.session_state["usuario"], st.session_state["rol"])
         return True
-    col1, col2, col3 = st.columns([2, 5, 2])  # Ajusta proporciones si quieres moverlo más
 
-    with col1:     
+    col1, col2, col3 = st.columns([2, 5, 2])
 
+    with col1:
         st.subheader("🔐 Inicio de sesión")
-    
+
         usuario = st.text_input("Usuario")
         clave = st.text_input("Contraseña", type="password")
 
@@ -69,8 +78,8 @@ def user_password():
 
         if autenticado:
 
-            # Guardar sesión
-            st.session_state["usuario"] = usuario
+            # Guardar sesión normalizada
+            st.session_state["usuario"] = usuario.strip().lower()
             st.session_state["rol"] = rol
             st.session_state["autenticado"] = True
 
@@ -86,6 +95,7 @@ def user_password():
 
 
         
+
 
 
 
