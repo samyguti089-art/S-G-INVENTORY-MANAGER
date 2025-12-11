@@ -297,11 +297,15 @@ def menu(usuario, rol):
     if rol == "admin":
         opciones.append("Administración de usuarios")
 
-    # Menú lateral
-    opcion = st.sidebar.selectbox("Selecciona una opción", opciones)
+    # ✅ Selectbox del menú (ID único)
+    opcion = st.sidebar.selectbox(
+        "Selecciona una opción",
+        opciones,
+        key="menu_principal"
+    )
 
-    # Botón de cierre de sesión
-    if st.sidebar.button("Cerrar sesión"):
+    # ✅ Botón de cierre de sesión
+    if st.sidebar.button("Cerrar sesión", key="logout_btn"):
         st.session_state["autenticado"] = False
         st.session_state["usuario"] = None
         st.session_state["rol"] = None
@@ -309,9 +313,6 @@ def menu(usuario, rol):
 
     return opcion
 
-
-    # Cargar inventario del usuario objetivo
-    inventario = cargar_inventario_usuario(usuario_objetivo)
 
     # --------------------------------------------------------
     # ✅ INVENTARIO
@@ -525,6 +526,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
