@@ -6,9 +6,10 @@ import io
 
 
 def animaciones ():
-    st.markdown("""
-<style>
+ st.markdown("""
+ <style>
 
+/* ✅ Fondo animado sci‑fi */
 body {
     background: linear-gradient(-45deg, #0a0f1f, #0d1b2a, #1b263b, #415a77);
     background-size: 400% 400%;
@@ -21,14 +22,12 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Fondo también para el contenedor principal de Streamlit */
+/* ✅ Fondo transparente para el contenedor principal */
 .main {
     background: transparent !important;
 }
 
-</style>
-, unsafe_allow_html=True)
-
+/* ✅ Fade-in */
 .fade-in {
     opacity: 0;
     animation: fadeIn 1.2s ease-in forwards;
@@ -38,6 +37,7 @@ body {
     to { opacity: 1; }
 }
 
+/* ✅ Pulso del logo */
 .pulse {
     animation: pulse 1.5s ease-in-out;
 }
@@ -48,12 +48,14 @@ body {
     100% { transform: scale(1); }
 }
 
+/* ✅ Inputs con efecto */
 input:focus {
     border-color: #00bcd4 !important;
     box-shadow: 0 0 5px rgba(0, 188, 212, 0.5) !important;
     transition: all 0.3s ease;
 }
 
+/* ✅ Botón con hover */
 button:hover {
     transform: scale(1.05);
     transition: all 0.3s ease;
@@ -61,7 +63,6 @@ button:hover {
 
 </style>
 """, unsafe_allow_html=True)
-
 
 def logo_title ():
 # Crear columnas: una angosta para el logo y otra para el título
@@ -203,6 +204,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
