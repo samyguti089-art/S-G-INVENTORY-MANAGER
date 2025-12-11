@@ -39,7 +39,7 @@ html, body, .stApp {
 
 /* ✅ Pulso del logo */
 .pulse {
-    animation: pulse 1.5s ease-in-out;
+    animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
@@ -204,6 +204,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
