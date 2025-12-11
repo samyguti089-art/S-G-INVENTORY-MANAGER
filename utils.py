@@ -207,11 +207,53 @@ def menu(usuario):
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
          st.success("✅ Inventario exportado a Excel")
+        with tab_3 :
+            def dashboard_graficos(inventario):
+
+                st.subheader("📊 Dashboard Corporativo S&G")
+    
+                df = pd.DataFrame(inventario)
+            
+                # ✅ Gráfico 1: Cantidad por producto
+                st.markdown("### 📦 Cantidad por producto")
+                fig1 = px.bar(
+                    df,
+                    x="nombre",
+                    y="cantidad",
+                    color="cantidad",
+                    color_continuous_scale="Blues",
+                    title="Cantidad disponible por producto"
+                )
+                st.plotly_chart(fig1, use_container_width=True)
+            
+                # ✅ Gráfico 2: Valor total por producto
+                st.markdown("### 💰 Valor total por producto")
+                fig2 = px.bar(
+                    df,
+                    x="nombre",
+                    y="valor_total",
+                    color="valor_total",
+                    color_continuous_scale="Teal",
+                    title="Valor total del inventario por producto"
+                )
+                st.plotly_chart(fig2, use_container_width=True)
+            
+                # ✅ Gráfico 3: Distribución por marca
+                st.markdown("### 🏷️ Distribución por marca")
+                fig3 = px.pie(
+                    df,
+                    names="marca",
+                    values="cantidad",
+                    title="Participación por marca"
+                )
+                st.plotly_chart(fig3, use_container_width=True)
+
     # Botón salir
     btn_salir = st.button("Salir")
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
