@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import bcrypt
-from utils import menu
 
 
 # ============================================================
@@ -55,13 +54,12 @@ def proteger_pagina():
 
 
 # ============================================================
-# ✅ Pantalla de Login
+# ✅ Pantalla de Login (NO muestra menú)
 # ============================================================
 def user_password():
 
     # Si ya está autenticado, entrar directo
     if st.session_state.get("autenticado", False):
-        menu(st.session_state["usuario"], st.session_state["rol"])
         return True
 
     col1, col2, col3 = st.columns([2, 5, 2])
@@ -92,9 +90,8 @@ def user_password():
     return False
 
 
-
-
         
+
 
 
 
