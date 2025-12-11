@@ -320,78 +320,7 @@ def menu(usuario, rol):
         st.rerun()
 
     return opcion
-    # --------------------------------------------------------
-    # ✅ INVENTARIO
-    # --------------------------------------------------------
-    elif opcion == "Inventario":
-
-    usuario_actual = st.session_state["usuario"]
-    st.header(f"🖥 Inventario de {usuario_actual}")
-
-    # ============================
-    # ✅ Cargar inventario del usuario
-    # ============================
-    def cargar_inventario(usuario):
-        try:
-            df = pd.read_csv(f"inventario_{usuario}.csv")
-            return df.to_dict(orient="records")
-        except:
-            return []
-
-    # ============================
-    # ✅ Guardar inventario del usuario
-    # ============================
-    def guardar_inventario(usuario, inventario):
-        df = pd.DataFrame(inventario)
-        df.to_csv(f"inventario_{usuario}.csv", index=False)
-
-    inventario = cargar_inventario(usuario_actual)
-
-    # ============================
-    # ✅ Tabs
-    # ============================
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "➕ Agregar producto",
-        "🗑 Eliminar producto",
-        "✏️ Actualizar producto",
-        "📋 Consultar inventario"
-    ])
-
-    # --------------------------------------------------------
-    # ✅ TAB 1 — Agregar producto
-    # --------------------------------------------------------
-    with tab1:
-        nombre = st.text_input("Nombre del producto")
-        marca = st.text_input("Marca del producto")
-        cantidad = st.number_input("Cantidad", min_value=1, step=1)
-        precio = st.number_input("Precio unitario", min_value=0.0, step=0.1)
-
-        if st.button("Guardar", key="guardar_producto"):
-            producto = {
-                "nombre": nombre.title().strip(),
-                "marca": marca.title().strip(),
-                "cantidad": cantidad,
-                "precio_unitario": precio,
-                "valor_total": cantidad * precio
-            }
-            inventario.append(producto)
-            guardar_inventario(usuario_actual, inventario)
-            st.success(f"✅ Producto '{nombre}' agregado al inventario.")
-
-    # --------------------------------------------------------
-    # ✅ TAB 2 — Eliminar producto
-    # --------------------------------------------------------
-    with tab2:
-        if inventario:
-            nombres = [p["nombre"] for p in inventario]
-            producto_sel = st.selectbox("Seleccione producto a eliminar", nombres)
-
-            if st.button("Eliminar", key="eliminar_producto"):
-                inventario = [p for p in inventario if p["nombre"] != producto_sel]
-                guardar_inventario(usuario_actual, inventario)
-                st.success(f"✅ Producto '{producto_sel}' eliminado.")
-        else:
-            st.info("Inventario vacío.")
+   
 
     # --------------------------------------------------------
     # ✅ TAB 3 — Actualizar producto
@@ -566,6 +495,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
