@@ -12,7 +12,7 @@ st.set_page_config(
 animaciones()
 
 # ✅ Estructura visual: logo izquierda, login derecha
-col1, col2 = st.columns([1, 2], gap="large")
+col1, col2 = st.columns([1, 5])
 
 with col1:
     st.markdown('<div class="pulse" style="text-align:center;">', unsafe_allow_html=True)
@@ -27,4 +27,5 @@ with col2:
 # ✅ Si no está autenticado, detener la app
 if not autenticado:
     st.stop()
+
 
