@@ -4,7 +4,7 @@ import json
 import os
 import io
 import plotly.express as px
-
+from permisos import tiene_permiso
 
 # ============================================================
 # ✅ ANIMACIONES Y ESTILO CORPORATIVO S&G
@@ -193,6 +193,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
