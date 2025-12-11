@@ -181,104 +181,6 @@ def seleccionar_usuario_para_admin(rol, usuario_actual):
     )
     return usuario_objetivo
 
-
-# ============================================================
-# ✅ TARJETAS KPI ESTILO POWER BI
-# ============================================================
-def kpi_cards(df):
-    if df.empty:
-        st.info("No hay datos para mostrar KPIs.")
-        return
-
-    total_productos = len(df)
-    valor_total = df["valor_total"].sum()
-    precio_promedio = df["precio_unitario"].mean()
-    total_marcas = df["marca"].nunique()
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    col1.metric("📦 Total productos", total_productos)
-    col2.metric("💰 Valor total", f"${valor_total:,.2f}")
-    col3.metric("💲 Precio promedio", f"${precio_promedio:,.2f}")
-    col4.metric("🏷️ Marcas únicas", total_marcas)
-
-
-# ============================================================
-# ✅ DASHBOARD AVANZADO ESTILO POWER BI
-# ============================================================
-def dashboard_graficos(inventario):
-
-    if not inventario:
-        st.info("No hay datos en el inventario para mostrar gráficos.")
-        return
-
-    st.subheader("📊 Dashboard Avanzado S&G (Estilo Power BI)")
-
-    df = pd.DataFrame(inventario)
-
-    # Asegurar columnas mínimas
-    for col in ["nombre", "marca", "cantidad", "precio_unitario", "valor_total"]:
-        if col not in df.columns:
-            st.error(f"Falta la columna '{col}' en el inventario.")
-            return
-
-    # ✅ Tarjetas KPI
-    kpi_cards(df)
-
-    st.markdown("---")
-
-    # ✅ Gráfico 1 — Barras horizontales (Top productos por valor)
-    st.markdown("### 💰 Top productos por valor total")
-    fig1 = px.bar(
-        df.sort_values("valor_total", ascending=True),
-        x="valor_total",
-        y="nombre",
-        orientation="h",
-        color="valor_total",
-        color_continuous_scale="Teal",
-        title="Productos con mayor valor en inventario"
-    )
-    st.plotly_chart(fig1, use_container_width=True)
-
-    # ✅ Gráfico 2 — Pie estilo donut
-    st.markdown("### 🏷️ Distribución por marca")
-    fig2 = px.pie(
-        df,
-        names="marca",
-        values="cantidad",
-        hole=0.4,
-        color_discrete_sequence=px.colors.sequential.Blues,
-        title="Participación por marca"
-    )
-    st.plotly_chart(fig2, use_container_width=True)
-
-    # ✅ Gráfico 3 — Scatter profesional
-    st.markdown("### 📈 Relación entre cantidad y precio unitario")
-    fig3 = px.scatter(
-        df,
-        x="precio_unitario",
-        y="cantidad",
-        size="valor_total",
-        color="marca",
-        title="Relación entre precio y cantidad por producto",
-        hover_name="nombre"
-    )
-    st.plotly_chart(fig3, use_container_width=True)
-
-    # ✅ Gráfico 4 — Barras agrupadas por marca
-    st.markdown("### 📊 Cantidad total por marca")
-    df_marca = df.groupby("marca", as_index=False)["cantidad"].sum()
-    fig4 = px.bar(
-        df_marca,
-        x="marca",
-        y="cantidad",
-        color="cantidad",
-        color_continuous_scale="Blues",
-        title="Cantidad total por marca"
-    )
-    st.plotly_chart(fig4, use_container_width=True)
-
-
 # ============================================================
 # ✅ MENÚ PRINCIPAL (CON INVENTARIO POR USUARIO)
 # ============================================================
@@ -328,6 +230,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
