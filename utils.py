@@ -150,12 +150,11 @@ def guardar_inventario_usuario(usuario, inventario):
 # ✅ PERMISOS POR ROL (base para escalar)
 # ============================================================
 PERMISOS = {
-    "admin": ["Inventario", "Ventas", "Compras", "Reportes"],
-    "usuario": ["Inventario", "Reportes"],  # rol por defecto
+    "admin": ["Inventario", "Ventas", "Compras", "Reportes", "Administración de usuarios"],
+    "usuario": ["Inventario", "Reportes"],
     "vendedor": ["Inventario", "Ventas"],
     "auditor": ["Reportes"],
 }
-
 
 def seleccionar_usuario_para_admin(rol, usuario_actual):
     """
@@ -409,6 +408,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
