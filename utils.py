@@ -282,6 +282,8 @@ def dashboard_graficos(inventario):
 # ============================================================
 # ✅ MENÚ PRINCIPAL (CON INVENTARIO POR USUARIO)
 # ============================================================
+import streamlit as st
+
 def menu(usuario, rol):
 
     st.sidebar.title("📌 Menú principal")
@@ -290,10 +292,16 @@ def menu(usuario, rol):
     st.sidebar.markdown(f"👤 **Usuario:** {usuario}")
     st.sidebar.markdown(f"🔑 **Rol:** {rol.upper()}")
 
-    # Opciones base para todos los usuarios
-    opciones = ["Inicio", "Inventario"]
+    # ✅ Opciones base para todos los usuarios
+    opciones = [
+        "Inicio",
+        "Inventario",
+        "Reportes",
+        "Compras",
+        "Ventas"
+    ]
 
-    # Solo el administrador puede ver la administración de usuarios
+    # ✅ Solo el administrador puede ver la administración de usuarios
     if rol == "admin":
         opciones.append("Administración de usuarios")
 
@@ -312,7 +320,6 @@ def menu(usuario, rol):
         st.rerun()
 
     return opcion
-
 
     # --------------------------------------------------------
     # ✅ INVENTARIO
@@ -526,6 +533,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
