@@ -1,0 +1,9 @@
+[
+    {
+        "nombre": "Televisor",
+        "marca": "Lg",
+        "cantidad": 15,
+        "precio_unitario": 180000.0,
+        "valor_total": 2700000.0
+    }
+]

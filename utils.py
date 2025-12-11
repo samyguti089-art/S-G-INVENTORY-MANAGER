@@ -1,0 +1,150 @@
+import streamlit as st
+import pandas as pd
+import json
+import os
+import io
+
+def logo_title ():
+# Crear columnas: una angosta para el logo y otra para el título
+   col1, col2 = st.columns([1, 5])
+   with col1:
+    st.image("tests/logo.png", width=200)  # ajusta el tamaño
+   with col2:
+    st.title("S&G Inventory Manager")
+
+
+def validar_usuario(usuario, clave):
+    dfusuarios = pd.read_csv("usuarios.csv", encoding="utf-8")
+    # Normalizar columnas y valores
+    dfusuarios.columns = dfusuarios.columns.str.strip()
+    dfusuarios = dfusuarios.applymap(lambda x: x.strip().lower() if isinstance(x, str) else x)
+    # Normalizar también lo que ingresa el usuario
+    usuario = usuario.strip().lower()
+    clave = clave.strip().lower()
+    return len(dfusuarios[(dfusuarios['usuario'] == usuario) & (dfusuarios['clave'] == clave)]) > 0
+  
+
+
+def cargar_inventario(archivo="inventario.json"):
+    if os.path.exists(archivo):
+        with open(archivo, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return []
+
+def guardar_inventario(inventario, archivo="inventario.json"):
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(inventario, f, indent=4, ensure_ascii=False)
+
+def menu(usuario):
+    with st.sidebar:
+        st.header("📦 Menú Principal")
+        opcion = st.selectbox("Selecciona una opción:", ["Inventario", "Ventas", "Compras", "Reportes"])
+        st.write(f"Has elegido: {opcion}")
+
+    if opcion == "Inventario":
+        st.header("🖥 Inventario")
+
+        # 👉 Crear pestañas
+        tab1, tab2, tab3, tab4 = st.tabs([
+            "➕ Agregar producto",
+            "🗑 Eliminar producto",
+            "✏️ Actualizar producto",
+            "📋 Consultar inventario"
+        ])
+
+        inventario = cargar_inventario()
+
+        # --- TAB 1: Agregar producto ---
+        with tab1:
+            nombre = st.text_input("Nombre del producto")
+            marca= st.text_input("marca del prodcuto")
+            cantidad = st.number_input("Cantidad", min_value=1, step=1)
+            precio = st.number_input("Precio unitario", min_value=0.0, step=0.1)
+
+            if st.button("Guardar", key="guardar"):
+                producto = {
+                    "nombre":nombre.title().strip(),
+                    "marca":marca.title().strip(),
+                    "cantidad": cantidad,
+                    "precio_unitario": precio,
+                    "valor_total": cantidad * precio
+                }
+                inventario.append(producto)
+                guardar_inventario(inventario)
+                st.success(f"✅ Producto '{nombre}' agregado al inventario")
+
+        # --- TAB 2: Eliminar producto ---
+        with tab2:
+            if inventario:
+                nombres = [p["nombre"] for p in inventario]
+                producto_sel = st.selectbox("Seleccione producto a eliminar", nombres)
+                if st.button("Eliminar", key="eliminar"):
+                    inventario = [p for p in inventario if p["nombre"] != producto_sel]
+                    guardar_inventario(inventario)
+                    st.success(f"Producto '{producto_sel}' eliminado.")
+            else:
+                st.info("Inventario vacío.")
+
+        # --- TAB 3: Actualizar producto ---
+        with tab3:
+            if inventario:
+                nombres = [p["nombre"] for p in inventario]
+                producto_sel = st.selectbox("Seleccione producto a actualizar", nombres)
+                producto = next((p for p in inventario if p["nombre"] == producto_sel), None)
+                if producto:
+                    nueva_cantidad = st.number_input("Nueva cantidad", value=producto["cantidad"], min_value=1)
+                    nuevo_precio = st.number_input("Nuevo precio", value=producto["precio_unitario"], min_value=0.0)
+                    if st.button("Actualizar", key="actualizar"):
+                        producto["cantidad"] = nueva_cantidad
+                        producto["precio_unitario"] = nuevo_precio
+                        producto["valor_total"] = nueva_cantidad * nuevo_precio
+                        guardar_inventario(inventario)
+                        st.success(f"Producto '{producto_sel}' actualizado.")
+            else:
+                st.info("Inventario vacío.")
+
+        # --- TAB 4: Consultar inventario ---
+        with tab4:
+            if inventario:
+                st.table(inventario)
+            else:
+                st.info("Inventario vacío.")
+    if opcion == "Reportes":
+        st.header("🖥 reportes")
+        tab_1, tab_2,tab_3  = st.tabs([
+            "exportar a excel",
+            "exportar a pdf ",
+            "graficas"   
+        ])
+    
+        inventario = cargar_inventario()
+
+        with tab_1:
+         exportar_excel = st.button("Exportar a Excel")
+
+        if exportar_excel:
+        # Convertir inventario a DataFrame
+         df = pd.DataFrame(inventario)
+
+        # Crear un buffer en memoria
+         buffer = io.BytesIO()
+         df.to_excel(buffer, index=False, engine="openpyxl")
+         buffer.seek(0)  # Volver al inicio del buffer
+
+        # Botón de descarga
+         st.download_button(
+            label="📥 Descargar Excel",
+            data=buffer,
+            file_name="inventario.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+         st.success("✅ Inventario exportado a Excel")
+    # Botón salir
+    btn_salir = st.button("Salir")
+    if btn_salir:
+        st.session_state.clear()
+        st.rerun()
+
+
+
+
