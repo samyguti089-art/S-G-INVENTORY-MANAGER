@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import bcrypt
-from utils import validar_usuario, menu
+from utils import menu
 
 
 # ============================================================
@@ -46,9 +46,14 @@ def validar_usuario_hash(usuario, clave):
 
 
 # ============================================================
-# ✅ Pantalla de Login
+# ✅ Pantalla de Login (RESPETA TU ESTRUCTURA ORIGINAL)
 # ============================================================
 def user_password():
+
+    # Si ya está autenticado, entrar directo
+    if st.session_state.get("autenticado", False):
+        menu(st.session_state["usuario"], st.session_state["rol"])
+        return True
 
     st.subheader("🔐 Inicio de sesión")
 
@@ -72,15 +77,11 @@ def user_password():
         else:
             st.error("❌ Usuario o contraseña incorrectos")
 
-    # Si ya está autenticado, entrar directo
-    if st.session_state.get("autenticado", False):
-        menu(st.session_state["usuario"], st.session_state["rol"])
-        return True
-
     return False
 
 
 
 
         
+
 
