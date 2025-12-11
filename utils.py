@@ -3,7 +3,7 @@ import pandas as pd
 import json
 import os
 import io
-
+import plotly.express as px
 
 def animaciones ():
     st.markdown("""
@@ -262,6 +262,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
