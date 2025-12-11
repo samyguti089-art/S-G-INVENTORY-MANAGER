@@ -18,17 +18,14 @@ def animaciones():
         background: linear-gradient(-45deg, #0a0f1f, #0d1b2a, #1b263b, #415a77);
         background-size: 400% 400%;
         animation: gradientBG 12s ease infinite !important;
+        color: #e0e6ed;
+        font-family: 'Segoe UI', sans-serif;
     }
 
     @keyframes gradientBG {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
-    }
-
-    /* ✅ Fondo transparente */
-    .main {
-        background: transparent !important;
     }
 
     /* ✅ Fade-in */
@@ -134,7 +131,25 @@ def guardar_inventario(inventario, archivo="inventario.json"):
 
 
 # ============================================================
-# ✅ DASHBOARD CORPORATIVO S&G
+# ✅ TARJETAS KPI ESTILO POWER BI
+# ============================================================
+def kpi_cards(df):
+
+    total_productos = len(df)
+    valor_total = df["valor_total"].sum()
+    precio_promedio = df["precio_unitario"].mean()
+    total_marcas = df["marca"].nunique()
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("📦 Total productos", total_productos)
+    col2.metric("💰 Valor total", f"${valor_total:,.2f}")
+    col3.metric("💲 Precio promedio", f"${precio_promedio:,.2f}")
+    col4.metric("🏷️ Marcas únicas", total_marcas)
+
+
+# ============================================================
+# ✅ DASHBOARD AVANZADO ESTILO POWER BI
 # ============================================================
 def dashboard_graficos(inventario):
 
@@ -147,7 +162,7 @@ def dashboard_graficos(inventario):
 
     st.markdown("---")
 
-    # ✅ Gráfico 1 — Barras horizontales (Top productos por valor)
+    # ✅ Gráfico 1 — Barras horizontales
     st.markdown("### 💰 Top productos por valor total")
     fig1 = px.bar(
         df.sort_values("valor_total", ascending=True),
@@ -160,7 +175,7 @@ def dashboard_graficos(inventario):
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # ✅ Gráfico 2 — Distribución por marca
+    # ✅ Gráfico 2 — Pie estilo donut
     st.markdown("### 🏷️ Distribución por marca")
     fig2 = px.pie(
         df,
@@ -172,7 +187,7 @@ def dashboard_graficos(inventario):
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # ✅ Gráfico 3 — Cantidad vs Precio (scatter)
+    # ✅ Gráfico 3 — Scatter profesional
     st.markdown("### 📈 Relación entre cantidad y precio unitario")
     fig3 = px.scatter(
         df,
@@ -196,6 +211,11 @@ def dashboard_graficos(inventario):
         title="Cantidad total por marca"
     )
     st.plotly_chart(fig4, use_container_width=True)
+
+
+# ============================================================
+# ✅ MENÚ PRINCIPAL
+# ============================================================
 def menu(usuario):
 
     with st.sidebar:
@@ -306,7 +326,7 @@ def menu(usuario):
                 )
                 st.success("✅ Inventario exportado a Excel")
 
-        # ✅ Gráficas
+        # ✅ Dashboard avanzado
         with tab_3:
             if inventario:
                 dashboard_graficos(inventario)
