@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.express as px
 import io
 from fpdf import FPDF
+from permisos import tiene_permiso
+
 
 # ============================================================
 # ✅ TARJETAS KPI
@@ -105,7 +107,7 @@ def dashboard_graficos(inventario):
 # ✅ MÓDULO PRINCIPAL DE REPORTES
 # ============================================================
 def reportes(usuario_actual):
-
+    rol = st.session_state["rol"]
     st.header(f"📊 Reportes de {usuario_actual}")
 
     # ============================
@@ -133,58 +135,69 @@ def reportes(usuario_actual):
     # ✅ TAB 1 — Exportar a Excel
     # --------------------------------------------------------
     with tab1:
-        st.subheader("📥 Exportar inventario a Excel")
-
-        if df.empty:
-            st.info("No hay datos para exportar.")
+        if not tiene_permiso(rol, "reportes", "exportar"):
+            st.warning("No tienes permiso para exportar a Excel.")
         else:
-            buffer = io.BytesIO()
-            df.to_excel(buffer, index=False, engine="openpyxl")
-            buffer.seek(0)
 
-            st.download_button(
-                label="📥 Descargar Excel",
-                data=buffer,
-                file_name=f"inventario_{usuario_actual}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+            st.subheader("📥 Exportar inventario a Excel")
+    
+            if df.empty:
+                st.info("No hay datos para exportar.")
+            else:
+                buffer = io.BytesIO()
+                df.to_excel(buffer, index=False, engine="openpyxl")
+                buffer.seek(0)
+    
+                st.download_button(
+                    label="📥 Descargar Excel",
+                    data=buffer,
+                    file_name=f"inventario_{usuario_actual}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
 
     # --------------------------------------------------------
     # ✅ TAB 2 — Exportar a PDF
     # --------------------------------------------------------
     with tab2:
-        st.subheader("📄 Exportar inventario a PDF")
-
-        if df.empty:
-            st.info("No hay datos para exportar.")
+        if not tiene_permiso(rol, "reportes", "exportar"):
+            st.warning("No tienes permiso para exportar a PDF.")
         else:
-            if st.button("Generar PDF"):
-                pdf = FPDF()
-                pdf.add_page()
-                pdf.set_font("Arial", size=12)
 
-                pdf.cell(200, 10, txt=f"Inventario de {usuario_actual}", ln=True, align="C")
-                pdf.ln(10)
-
-                for index, row in df.iterrows():
-                    pdf.cell(
-                        200,
-                        8,
-                        txt=f"{row['nombre']} - {row['marca']} - Cant: {row['cantidad']} - Precio: {row['precio_unitario']}",
-                        ln=True
+            st.subheader("📄 Exportar inventario a PDF")
+    
+            if df.empty:
+                st.info("No hay datos para exportar.")
+            else:
+                if st.button("Generar PDF"):
+                    pdf = FPDF()
+                    pdf.add_page()
+                    pdf.set_font("Arial", size=12)
+    
+                    pdf.cell(200, 10, txt=f"Inventario de {usuario_actual}", ln=True, align="C")
+                    pdf.ln(10)
+    
+                    for index, row in df.iterrows():
+                        pdf.cell(
+                            200,
+                            8,
+                            txt=f"{row['nombre']} - {row['marca']} - Cant: {row['cantidad']} - Precio: {row['precio_unitario']}",
+                            ln=True
+                        )
+    
+                    pdf_output = pdf.output(dest="S").encode("latin1")
+    
+                    st.download_button(
+                        label="📄 Descargar PDF",
+                        data=pdf_output,
+                        file_name=f"inventario_{usuario_actual}.pdf",
+                        mime="application/pdf"
                     )
-
-                pdf_output = pdf.output(dest="S").encode("latin1")
-
-                st.download_button(
-                    label="📄 Descargar PDF",
-                    data=pdf_output,
-                    file_name=f"inventario_{usuario_actual}.pdf",
-                    mime="application/pdf"
-                )
 
     # --------------------------------------------------------
     # ✅ TAB 3 — Dashboard Avanzado
     # --------------------------------------------------------
     with tab3:
-        dashboard_graficos(df.to_dict(orient="records"))
+        if not tiene_permiso(rol, "reportes", "dashboard"):
+            st.warning("No tienes permiso para ver el dashboard.")
+        else:
+            dashboard_graficos(df.to_dict(orient="records"))
