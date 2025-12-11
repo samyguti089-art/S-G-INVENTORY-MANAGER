@@ -208,6 +208,8 @@ def menu(usuario):
         )
          st.success("✅ Inventario exportado a Excel")
         with tab_3 :
+             if inventario:
+                dashboard_graficos(inventario)
             def dashboard_graficos(inventario):
 
                 st.subheader("📊 Dashboard Corporativo S&G")
@@ -247,12 +249,15 @@ def menu(usuario):
                     title="Participación por marca"
                 )
                 st.plotly_chart(fig3, use_container_width=True)
+            else:
+                st.info("No hay datos en el inventario para mostrar gráficos.")
 
     # Botón salir
     btn_salir = st.button("Salir")
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
