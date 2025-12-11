@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import login as lgn
 from utils import logo_title, animaciones, menu
+from mod_reportes import reportes
 import io
 from fpdf import FPDF
 import plotly.express as px
@@ -159,6 +160,7 @@ elif opcion == "Ventas":
 elif opcion == "Administración de usuarios":
     from admin_user import admin_usuarios
     admin_usuarios()
+
 
 
 
