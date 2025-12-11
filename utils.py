@@ -145,42 +145,6 @@ def guardar_inventario_usuario(usuario, inventario):
     with open(archivo, "w", encoding="utf-8") as f:
         json.dump(inventario, f, indent=4, ensure_ascii=False)
 
-
-# ============================================================
-# ✅ PERMISOS POR ROL (base para escalar)
-# ============================================================
-PERMISOS = {
-    "admin": ["Inventario", "Ventas", "Compras", "Reportes", "Administración de usuarios"],
-    "usuario": ["Inventario", "Reportes"],
-    "vendedor": ["Inventario", "Ventas"],
-    "auditor": ["Reportes"],
-}
-
-def seleccionar_usuario_para_admin(rol, usuario_actual):
-    """
-    Si es admin, puede elegir a qué usuario ver.
-    Si no, siempre ve su propio inventario.
-    """
-    if rol != "admin":
-        return usuario_actual
-
-    if not os.path.exists("usuarios.csv"):
-        return usuario_actual
-
-    df = pd.read_csv("usuarios.csv", encoding="utf-8")
-    if "usuario" not in df.columns:
-        return usuario_actual
-
-    usuarios = df["usuario"].dropna().unique().tolist()
-
-    st.sidebar.markdown("---")
-    usuario_objetivo = st.sidebar.selectbox(
-        "👁️ Usuario a administrar:",
-        usuarios,
-        index=usuarios.index(usuario_actual) if usuario_actual in usuarios else 0
-    )
-    return usuario_objetivo
-
 # ============================================================
 # ✅ MENÚ PRINCIPAL (CON INVENTARIO POR USUARIO)
 # ============================================================
@@ -189,39 +153,38 @@ import streamlit as st
 def menu(usuario, rol):
 
     st.sidebar.title("📌 Menú principal")
-
-    # Mostrar información del usuario
     st.sidebar.markdown(f"👤 **Usuario:** {usuario}")
     st.sidebar.markdown(f"🔑 **Rol:** {rol.upper()}")
 
-    # ✅ Opciones base para todos los usuarios
-    opciones = [
-        "Inicio",
-        "Inventario",
-        "Reportes",
-        "Compras",
-        "Ventas"
-    ]
+    opciones = ["Inicio"]
 
-    # ✅ Solo el administrador puede ver la administración de usuarios
-    if rol == "admin":
+    if tiene_permiso(rol, "inventario", "ver"):
+        opciones.append("Inventario")
+
+    if tiene_permiso(rol, "reportes", "ver"):
+        opciones.append("Reportes")
+
+    if tiene_permiso(rol, "compras", "ver"):
+        opciones.append("Compras")
+
+    if tiene_permiso(rol, "ventas", "ver"):
+        opciones.append("Ventas")
+
+    if tiene_permiso(rol, "usuarios", "ver"):
         opciones.append("Administración de usuarios")
 
-    # ✅ Selectbox del menú (ID único)
     opcion = st.sidebar.selectbox(
         "Selecciona una opción",
         opciones,
         key="menu_principal"
     )
 
-    # ✅ Botón de cierre de sesión
     if st.sidebar.button("Cerrar sesión", key="logout_btn"):
-        st.session_state["autenticado"] = False
-        st.session_state["usuario"] = None
-        st.session_state["rol"] = None
+        st.session_state.clear()
         st.rerun()
 
     return opcion
+
    
 
     # --------------------------------------------------------
@@ -230,6 +193,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
