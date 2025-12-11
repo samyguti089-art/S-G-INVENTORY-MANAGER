@@ -89,7 +89,7 @@ def animaciones():
 # ✅ LOGO Y TÍTULO
 # ============================================================
 def logo_title():
-    col1, col2 = st.columns([1, 5])
+    col1, col2 = st.columns([1, 2])
     with col1:
         st.markdown('<div class="pulse">', unsafe_allow_html=True)
         st.image("logo.png", width=200)
@@ -410,6 +410,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
