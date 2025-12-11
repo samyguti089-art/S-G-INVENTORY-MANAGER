@@ -321,70 +321,6 @@ def menu(usuario, rol):
 
     return opcion
    
-
-    # --------------------------------------------------------
-    # ✅ TAB 3 — Actualizar producto
-    # --------------------------------------------------------
-    with tab3:
-        if inventario:
-            nombres = [p["nombre"] for p in inventario]
-            producto_sel = st.selectbox("Seleccione producto a actualizar", nombres)
-
-            producto = next((p for p in inventario if p["nombre"] == producto_sel), None)
-
-            if producto:
-                nueva_cantidad = st.number_input("Nueva cantidad", value=producto["cantidad"], min_value=1)
-                nuevo_precio = st.number_input("Nuevo precio", value=producto["precio_unitario"], min_value=0.0)
-
-                if st.button("Actualizar", key="actualizar_producto"):
-                    producto["cantidad"] = nueva_cantidad
-                    producto["precio_unitario"] = nuevo_precio
-                    producto["valor_total"] = nueva_cantidad * nuevo_precio
-                    guardar_inventario(usuario_actual, inventario)
-                    st.success(f"✅ Producto '{producto_sel}' actualizado.")
-        else:
-            st.info("Inventario vacío.")
-
-    # --------------------------------------------------------
-    # ✅ TAB 4 — Consultar inventario
-    # --------------------------------------------------------
-    with tab4:
-        if inventario:
-            st.table(inventario)
-        else:
-            st.info("Inventario vacío.")
-
-    # --------------------------------------------------------
-    # ✅ REPORTES
-    # --------------------------------------------------------
-    if opcion == "Reportes":
-
-        st.header(f"📊 Reportes de {usuario_objetivo}")
-        tab_1, tab_2, tab_3 = st.tabs([
-            "📥 Exportar a Excel",
-            "📄 Exportar a PDF",
-            "📈 Gráficas"
-        ])
-
-        # ✅ Exportar Excel
-        with tab_1:
-            if st.button("Exportar a Excel"):
-                if inventario:
-                    df = pd.DataFrame(inventario)
-                    buffer = io.BytesIO()
-                    df.to_excel(buffer, index=False, engine="openpyxl")
-                    buffer.seek(0)
-
-                    st.download_button(
-                        label="📥 Descargar Excel",
-                        data=buffer,
-                        file_name=f"inventario_{usuario_objetivo}.xlsx",
-                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    )
-                    st.success("✅ Inventario exportado a Excel")
-                else:
-                    st.info("No hay datos para exportar.")
-
         # ✅ Dashboard avanzado
         with tab_3:
       
@@ -495,6 +431,7 @@ def menu(usuario, rol):
     if st.button("Salir"):
         st.session_state.clear()
         st.rerun()
+
 
 
 
