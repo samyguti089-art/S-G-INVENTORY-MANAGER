@@ -1,31 +1,16 @@
-import streamlit as st
-import login as lgn
-from utils import animaciones
+import streamlit as st 
+import pandas as pd 
+import login as lgn from utils import logo_title, animaciones
 
-st.set_page_config(
-    page_title="S&G INVENTORY MANAGER",
-    page_icon="🖥",
-    layout="wide"
-)
-
-# ✅ Fondo animado
+st.set_page_config( page_title="S&G INVENTORY MANAGER", page_icon="🖥", layout="wide" )
+✅ Cargar animaciones primero
 animaciones()
-
-# ✅ Estructura visual: logo izquierda, login derecha
-col1, col2 = st.columns([1, 5])
-
-with col1:
-    st.markdown('<div class="pulse" style="text-align:center;">', unsafe_allow_html=True)
-    st.image("logo.png", width=200)  # ✅ AHORA SÍ SE VE EL LOGO
-    st.markdown('<h2 style="color:white; margin-top:10px;">S&G INVENTORY MANAGER</h2>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with col2:
-    st.markdown('<h3 style="color:white;">🔒 Inicio de sesión</h3>', unsafe_allow_html=True)
-    autenticado = lgn.user_password()
-
-# ✅ Si no está autenticado, detener la app
-if not autenticado:
-    st.stop()
-
-
+✅ Mostrar logo y título ANTES del login
+logo_title()
+✅ Llamada al login
+Esta función debe manejar internamente si el usuario está autenticado o no
+autenticado = lgn.user_password()
+✅ Si NO está autenticado, detenemos la ejecución aquí
+if not autenticado: st.stop()
+✅ Si está autenticado, ahora sí mostramos la página principal
+st.header('Página :blue[Principal]')
