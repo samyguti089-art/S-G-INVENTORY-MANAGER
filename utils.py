@@ -9,6 +9,26 @@ def animaciones ():
     st.markdown("""
 <style>
 
+body {
+    background: linear-gradient(-45deg, #0a0f1f, #0d1b2a, #1b263b, #415a77);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Fondo también para el contenedor principal de Streamlit */
+.main {
+    background: transparent !important;
+}
+
+</style>
+, unsafe_allow_html=True)
+
 .fade-in {
     opacity: 0;
     animation: fadeIn 1.2s ease-in forwards;
@@ -183,6 +203,7 @@ def menu(usuario):
     if btn_salir:
         st.session_state.clear()
         st.rerun()
+
 
 
 
