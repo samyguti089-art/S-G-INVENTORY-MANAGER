@@ -4,6 +4,7 @@ import login as lgn
 from utils import logo_title, animaciones, menu
 from mod_reportes import reportes
 from permisos import tiene_permiso
+from conexion_supabase import cargar_inventario, guardar_inventario
 import io
 from fpdf import FPDF
 import plotly.express as px
