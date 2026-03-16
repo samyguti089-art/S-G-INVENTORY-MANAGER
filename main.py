@@ -131,7 +131,7 @@ elif opcion == "Inventario":
                     if st.button("Actualizar", key="actualizar_producto"):
                         producto["cantidad"] = nueva_cantidad
                         producto["precio_unitario"] = nuevo_precio
-                        producto["valor_total"] = nueva_cantidad * nuevo_precio
+                        producto["valor_total"] = round(nueva_cantidad * nuevo_precio, 2)
                         guardar_inventario(usuario_actual, inventario)
                         st.success(f"✅ Producto '{producto_sel}' actualizado.")
             else:
