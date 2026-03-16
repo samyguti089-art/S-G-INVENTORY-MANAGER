@@ -7,7 +7,6 @@ from permisos import tiene_permiso
 import io
 from fpdf import FPDF
 import plotly.express as px
-import round
 
 st.set_page_config(
     page_title="S&G INVENTORY MANAGER",
