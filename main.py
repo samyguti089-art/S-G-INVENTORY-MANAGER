@@ -5,9 +5,6 @@ from utils import logo_title, animaciones, menu
 from mod_reportes import reportes
 from permisos import tiene_permiso
 from conexion_supabase import cargar_inventario, guardar_inventario
-import io
-from fpdf import FPDF
-import plotly.express as px
 
 st.set_page_config(
     page_title="S&G INVENTORY MANAGER",
@@ -25,44 +22,18 @@ if not autenticado:
 opcion = menu(st.session_state["usuario"], st.session_state["rol"])
 
 # --------------------------------------------------------
-# ✅ INICIO
-# --------------------------------------------------------
-if opcion == "Inicio":
-    st.header("🏠 Página Principal")
-
-# --------------------------------------------------------
 # ✅ INVENTARIO
 # --------------------------------------------------------
-elif opcion == "Inventario":
+if opcion == "Inventario":
 
-    usuario_actual = st.session_state["usuario"]
+    usuario_actual = st.session_state["usuario"].strip().lower()
     rol = st.session_state["rol"]
 
     st.header(f"🖥 Inventario de {usuario_actual}")
 
-    # ============================
-    # ✅ Cargar inventario del usuario
-    # ============================
-    def cargar_inventario(usuario):
-        try:
-            df = pd.read_csv(f"inventario_{usuario}.csv")
-            return df.to_dict(orient="records")
-        except:
-            return []
-
-    # ============================
-    # ✅ Guardar inventario del usuario
-    # ============================
-    def guardar_inventario(usuario, inventario):
-        df = pd.DataFrame(inventario)
-        df.to_csv(f"inventario_{usuario}.csv", index=False)
-
-    # ✅ AQUÍ SE CREA LA VARIABLE inventario
+    # ✅ Cargar inventario desde Supabase
     inventario = cargar_inventario(usuario_actual)
 
-    # ============================
-    # ✅ Tabs
-    # ============================
     tab1, tab2, tab3, tab4 = st.tabs([
         "➕ Agregar producto",
         "🗑 Eliminar producto",
@@ -70,9 +41,7 @@ elif opcion == "Inventario":
         "📋 Consultar inventario"
     ])
 
-    # --------------------------------------------------------
-    # ✅ TAB 1 — Agregar producto
-    # --------------------------------------------------------
+    # TAB 1 — Agregar producto
     with tab1:
         if not tiene_permiso(rol, "inventario", "agregar"):
             st.warning("No tienes permiso para agregar productos.")
@@ -88,15 +57,14 @@ elif opcion == "Inventario":
                     "marca": marca.title().strip(),
                     "cantidad": cantidad,
                     "precio_unitario": precio,
-                    "valor_total": round (cantidad * precio,2)
+                    "valor_total": round(cantidad * precio, 2),
+                    "usuario": usuario_actual
                 }
                 inventario.append(producto)
                 guardar_inventario(usuario_actual, inventario)
                 st.success(f"✅ Producto '{nombre}' agregado.")
 
-    # --------------------------------------------------------
-    # ✅ TAB 2 — Eliminar producto
-    # --------------------------------------------------------
+    # TAB 2 — Eliminar producto
     with tab2:
         if not tiene_permiso(rol, "inventario", "eliminar"):
             st.warning("No tienes permiso para eliminar productos.")
@@ -112,9 +80,7 @@ elif opcion == "Inventario":
             else:
                 st.info("Inventario vacío.")
 
-    # --------------------------------------------------------
-    # ✅ TAB 3 — Actualizar producto
-    # --------------------------------------------------------
+    # TAB 3 — Actualizar producto
     with tab3:
         if not tiene_permiso(rol, "inventario", "editar"):
             st.warning("No tienes permiso para editar productos.")
@@ -138,15 +104,13 @@ elif opcion == "Inventario":
             else:
                 st.info("Inventario vacío.")
 
-    # --------------------------------------------------------
-    # ✅ TAB 4 — Consultar inventario
-    # --------------------------------------------------------
+    # TAB 4 — Consultar inventario
     with tab4:
         if not tiene_permiso(rol, "inventario", "ver"):
             st.warning("No tienes permiso para ver el inventario.")
         else:
             if inventario:
-                st.table(inventario)
+                st.dataframe(pd.DataFrame(inventario), use_container_width=True)
             else:
                 st.info("Inventario vacío.")
 # --------------------------------------------------------
