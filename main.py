@@ -92,8 +92,8 @@ if opcion == "Inventario":
                 producto = next((p for p in inventario if p["nombre"] == producto_sel), None)
 
                 if producto:
-                    nueva_cantidad = st.number_input("Nueva cantidad", value=producto["cantidad"], min_value=1)
-                    nuevo_precio = st.number_input("Nuevo precio", value=producto["precio_unitario"], min_value=0.0)
+                    nueva_cantidad = st.number_input("Nueva cantidad", value=int(producto["cantidad"]), min_value=1)
+                    nuevo_precio = st.number_input("Nuevo precio", value=float(producto["precio_unitario"]), min_value=0.0)
 
                     if st.button("Actualizar", key="actualizar_producto"):
                         producto["cantidad"] = nueva_cantidad
