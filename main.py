@@ -4,7 +4,7 @@ import login as lgn
 from utils import logo_title, animaciones, menu
 from mod_reportes import reportes
 from permisos import tiene_permiso
-from conexion_supabase import cargar_inventario, guardar_inventario
+from conexion_sp import cargar_inventario, guardar_inventario
 
 st.set_page_config(
     page_title="S&G INVENTORY MANAGER",
