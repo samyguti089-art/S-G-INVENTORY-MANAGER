@@ -23,10 +23,10 @@ PERMISOS = {
         "usuarios": []
     },
     "usuario": {
-        "inventario": ["ver", "agregar"],
-        "reportes": [],
-        "ventas": [],
-        "compras": [],
+        "inventario": ["ver", "agregar","editar", "eliminar"],
+        "reportes": ["ver", "dashboard"],
+        "ventas": ["ver", "crear"],
+        "compras": ["ver",],
         "usuarios": []
     }
 }
