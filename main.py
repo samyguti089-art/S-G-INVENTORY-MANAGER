@@ -7,6 +7,7 @@ from permisos import tiene_permiso
 import io
 from fpdf import FPDF
 import plotly.express as px
+import round
 
 st.set_page_config(
     page_title="S&G INVENTORY MANAGER",
@@ -87,7 +88,7 @@ elif opcion == "Inventario":
                     "marca": marca.title().strip(),
                     "cantidad": cantidad,
                     "precio_unitario": precio,
-                    "valor_total": cantidad * precio
+                    "valor_total": round (cantidad * precio,2)
                 }
                 inventario.append(producto)
                 guardar_inventario(usuario_actual, inventario)
